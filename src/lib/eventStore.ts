@@ -1,4 +1,4 @@
-import type { ParticipantHandles, SettleEvent } from "../features/settle/types";
+import type { Expense, ParticipantHandles, SettleEvent } from "../features/settle/types";
 
 const KEY_PREFIX = "billsplitter:event:";
 
@@ -81,6 +81,98 @@ export function setHandles(
   if (handles.paypal !== undefined) p.paypal = handles.paypal || undefined;
   writeEvent(event);
   return event;
+}
+
+export type ExpenseErrorCode =
+  | "blank-description"
+  | "zero-amount"
+  | "negative-amount"
+  | "negative-tax"
+  | "negative-tip"
+  | "unknown-payer"
+  | "empty-split"
+  | "payer-not-in-split"
+  | "unknown-participant";
+
+export class ExpenseError extends Error {
+  constructor(public code: ExpenseErrorCode, message: string) {
+    super(message);
+    this.name = "ExpenseError";
+  }
+}
+
+/** Pure reducer: returns a new event with the expense appended. Throws ExpenseError on invalid input. */
+export function addExpense(event: SettleEvent, expense: Expense): SettleEvent {
+  if (expense.description.trim() === "") {
+    throw new ExpenseError("blank-description", "expense description must not be blank");
+  }
+  if (expense.amountCents === 0) {
+    throw new ExpenseError("zero-amount", "expense amount must be > 0");
+  }
+  if (expense.amountCents < 0) {
+    throw new ExpenseError("negative-amount", "expense amount must be > 0");
+  }
+  if (expense.taxCents < 0) {
+    throw new ExpenseError("negative-tax", "tax must be >= 0");
+  }
+  if (expense.tipCents < 0) {
+    throw new ExpenseError("negative-tip", "tip must be >= 0");
+  }
+  const ids = new Set(event.participants.map((p) => p.id));
+  if (!ids.has(expense.payerId)) {
+    throw new ExpenseError("unknown-payer", `payer "${expense.payerId}" not in event`);
+  }
+  if (expense.splitWith.length === 0) {
+    throw new ExpenseError("empty-split", "splitWith must include at least one participant");
+  }
+  for (const id of expense.splitWith) {
+    if (!ids.has(id)) {
+      throw new ExpenseError("unknown-participant", `participant "${id}" not in event`);
+    }
+  }
+  if (!expense.splitWith.includes(expense.payerId)) {
+    throw new ExpenseError(
+      "payer-not-in-split",
+      `payer "${expense.payerId}" must be included in splitWith`
+    );
+  }
+  return {
+    ...event,
+    expenses: [...(event.expenses ?? []), expense],
+  };
+}
+
+export function makeExpenseId(): string {
+  let suffix = "";
+  for (let i = 0; i < 8; i++) suffix += SLUG_CHARS[Math.floor(Math.random() * SLUG_CHARS.length)];
+  return `exp-${suffix}`;
+}
+
+/** Total cents (subtotal + tax + tip) across every expense on the event. */
+export function expenseTotalCents(event: SettleEvent): number {
+  return (event.expenses ?? []).reduce(
+    (acc, e) => acc + e.amountCents + e.taxCents + e.tipCents,
+    0
+  );
+}
+
+/** Per-participant balance in cents. Positive = owed by others, negative = owes. Sums to zero. */
+export function computeBalances(event: SettleEvent): Record<string, number> {
+  const balances: Record<string, number> = {};
+  for (const p of event.participants) balances[p.id] = 0;
+  for (const e of event.expenses ?? []) {
+    const total = e.amountCents + e.taxCents + e.tipCents;
+    const n = e.splitWith.length;
+    if (n === 0) continue;
+    const base = Math.floor(total / n);
+    const remainder = total - base * n;
+    balances[e.payerId] = (balances[e.payerId] ?? 0) + total;
+    e.splitWith.forEach((id, i) => {
+      const share = base + (i < remainder ? 1 : 0);
+      balances[id] = (balances[id] ?? 0) - share;
+    });
+  }
+  return balances;
 }
 
 export function makeParticipantId(name: string, taken: Set<string>): string {
