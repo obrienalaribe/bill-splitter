@@ -1,4 +1,4 @@
-import type { SettleEvent } from "../features/settle/types";
+import type { ParticipantHandles, SettleEvent } from "../features/settle/types";
 
 const KEY_PREFIX = "billsplitter:event:";
 
@@ -31,6 +31,47 @@ export function makeEventId(title: string): string {
   let suffix = "";
   for (let i = 0; i < 6; i++) suffix += SLUG_CHARS[Math.floor(Math.random() * SLUG_CHARS.length)];
   return `${slug}-${suffix}`;
+}
+
+export class AlreadyClaimedError extends Error {
+  constructor(public participantId: string, public participantName: string) {
+    super(`already claimed: ${participantName} (${participantId})`);
+    this.name = "AlreadyClaimedError";
+  }
+}
+
+export function claimName(
+  eventId: string,
+  participantId: string,
+  handles?: ParticipantHandles
+): SettleEvent {
+  const event = readEvent(eventId);
+  if (!event) throw new Error(`event "${eventId}" not found`);
+  const p = event.participants.find((x) => x.id === participantId);
+  if (!p) throw new Error(`participant "${participantId}" not in event`);
+  if (p.claimedBy) throw new AlreadyClaimedError(p.id, p.name);
+  p.claimedBy = true;
+  if (handles?.venmo) p.venmo = handles.venmo;
+  if (handles?.cashapp) p.cashapp = handles.cashapp;
+  if (handles?.paypal) p.paypal = handles.paypal;
+  writeEvent(event);
+  return event;
+}
+
+export function setHandles(
+  eventId: string,
+  participantId: string,
+  handles: ParticipantHandles
+): SettleEvent {
+  const event = readEvent(eventId);
+  if (!event) throw new Error(`event "${eventId}" not found`);
+  const p = event.participants.find((x) => x.id === participantId);
+  if (!p) throw new Error(`participant "${participantId}" not in event`);
+  if (handles.venmo !== undefined) p.venmo = handles.venmo || undefined;
+  if (handles.cashapp !== undefined) p.cashapp = handles.cashapp || undefined;
+  if (handles.paypal !== undefined) p.paypal = handles.paypal || undefined;
+  writeEvent(event);
+  return event;
 }
 
 export function makeParticipantId(name: string, taken: Set<string>): string {

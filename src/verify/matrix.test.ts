@@ -23,6 +23,7 @@ import { runUnit } from "./core/runner";
 const EXPECTED_FAIL = new Set<string>([
   "SettleScreen::self-debt",
   "SettleScreen::unknown-participant-in-debt",
+  "ClaimNameScreen::already-claimed",
 ]);
 
 describe("verification matrix", () => {
