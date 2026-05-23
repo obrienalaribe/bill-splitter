@@ -29,6 +29,7 @@ const EXPECTED_FAIL = new Set<string>([
   "AddExpenseScreen::zero-amount",
   "AddExpenseScreen::payer-not-in-splitWith",
   "AddExpenseScreen::negative-tax",
+  "EventHomeScreen::balances-cancel",
 ]);
 
 describe("verification matrix", () => {

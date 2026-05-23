@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { z } from "zod";
 import { registerUnit } from "../core/registry";
 import { EventHomeScreen, type EventHomeScreenProps } from "../../features/home/EventHomeScreen";
-import { computeBalances, expenseTotalCents } from "../../lib/balance";
+import { computeBalances, computeDebts, expenseTotalCents } from "../../lib/balance";
 import type { Expense } from "../../features/settle/types";
 
 const ParticipantSchema = z.object({
@@ -135,6 +135,27 @@ registerUnit<EventHomeScreenProps>({
       },
     },
     {
+      id: "balances-cancel",
+      probe: true,
+      description:
+        "Probe: every participant pays own share — all balances cancel to 0, computeDebts must return []. Probe fails the derives-nonempty-debts invariant gracefully (no crash, just empty pair set).",
+      props: {
+        event: {
+          id: "balances-cancel-event",
+          title: "Even Split",
+          currency: "USD",
+          participants: PARTICIPANTS,
+          debts: [],
+          expenses: [
+            makeExpense(1, "alex", ["alex", "sam", "jordan", "riley"], 4000, "Alex pays"),
+            makeExpense(2, "sam", ["alex", "sam", "jordan", "riley"], 4000, "Sam pays"),
+            makeExpense(3, "jordan", ["alex", "sam", "jordan", "riley"], 4000, "Jordan pays"),
+            makeExpense(4, "riley", ["alex", "sam", "jordan", "riley"], 4000, "Riley pays"),
+          ],
+        },
+      },
+    },
+    {
       id: "empty-event",
       probe: true,
       description:
@@ -261,6 +282,41 @@ registerUnit<EventHomeScreenProps>({
         const cta = root.querySelector('[data-verify-action="add-expense"]');
         if (!cta) return "missing [data-verify-action='add-expense'] CTA";
         return true;
+      },
+    },
+    {
+      id: "settle-link-href",
+      description:
+        "[data-verify-link='settle'] exists and href === /e/:eventId/settle.",
+      check: ({ root, props }) => {
+        const link = root.querySelector<HTMLAnchorElement>('[data-verify-link="settle"]');
+        if (!link) return "missing [data-verify-link='settle']";
+        const want = `/e/${props.event.id}/settle`;
+        const got = link.getAttribute("href") ?? "";
+        return got === want || `settle link href="${got}", expected "${want}"`;
+      },
+    },
+    {
+      id: "debt-derivation-conserves-cents",
+      description:
+        "Σ(computeDebts(balances).amountCents) === Σ(|negative balances|) — derivation is cent-conserving.",
+      check: ({ props }) => {
+        const balances = computeBalances(props.event);
+        const pairs = computeDebts(balances);
+        let owed = 0;
+        for (const v of balances.values()) if (v < 0) owed += -v;
+        const moved = pairs.reduce((acc, p) => acc + p.amountCents, 0);
+        return moved === owed || `pairs sum ${moved}, expected ${owed}`;
+      },
+    },
+    {
+      id: "derives-nonempty-debts",
+      description:
+        "Non-trivial event has ≥1 derivable debt pair. Probe 'balances-cancel' (all balances 0) MUST FAIL — derivation returns [] gracefully.",
+      onlyFixtures: ["ten-expenses", "single-expense", "balances-cancel"],
+      check: ({ props }) => {
+        const pairs = computeDebts(computeBalances(props.event));
+        return pairs.length > 0 || `computeDebts returned [] — no settlement required`;
       },
     },
     {

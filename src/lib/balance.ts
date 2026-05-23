@@ -29,3 +29,37 @@ export function expenseTotalCents(event: SettleEvent): number {
     0
   );
 }
+
+export interface DebtPair {
+  fromId: string;
+  toId: string;
+  amountCents: number;
+}
+
+/**
+ * Greedy bipartite settlement: pair largest debtor with largest creditor until cleared.
+ * Σ(pair.amountCents) === Σ(|negative balances|) === Σ(positive balances).
+ * All balances zero → [].
+ */
+export function computeDebts(balances: Map<string, number>): DebtPair[] {
+  const debtors: Array<[string, number]> = [];
+  const creditors: Array<[string, number]> = [];
+  for (const [id, v] of balances) {
+    if (v < 0) debtors.push([id, -v]);
+    else if (v > 0) creditors.push([id, v]);
+  }
+  debtors.sort((a, b) => b[1] - a[1]);
+  creditors.sort((a, b) => b[1] - a[1]);
+  const pairs: DebtPair[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < debtors.length && j < creditors.length) {
+    const pay = Math.min(debtors[i][1], creditors[j][1]);
+    pairs.push({ fromId: debtors[i][0], toId: creditors[j][0], amountCents: pay });
+    debtors[i][1] -= pay;
+    creditors[j][1] -= pay;
+    if (debtors[i][1] === 0) i++;
+    if (creditors[j][1] === 0) j++;
+  }
+  return pairs;
+}

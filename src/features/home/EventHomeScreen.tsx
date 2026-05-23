@@ -133,7 +133,7 @@ export function EventHomeScreen({ event }: EventHomeScreenProps) {
         <Link
           to={`/e/${event.id}/settle`}
           className="mark-paid"
-          data-verify-action="go-settle"
+          data-verify-link="settle"
         >
           SETTLE →
         </Link>
