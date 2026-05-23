@@ -66,9 +66,6 @@ export function Dashboard() {
           <button onClick={runAll} disabled={running} data-verify-action="run-all">
             {running ? "Running…" : "Run all"}
           </button>
-          <Link to="/verify/replay" className="replay-link" data-verify-action="replay">
-            ▶ Replay all
-          </Link>
           <Link to="/">← back to app</Link>
         </div>
         {summary && (
