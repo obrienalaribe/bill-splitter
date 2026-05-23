@@ -1,4 +1,7 @@
 import type { Expense, ParticipantHandles, SettleEvent } from "../features/settle/types";
+import { computeBalances, expenseTotalCents } from "./balance";
+
+export { computeBalances, expenseTotalCents };
 
 const KEY_PREFIX = "billsplitter:event:";
 
@@ -146,33 +149,6 @@ export function makeExpenseId(): string {
   let suffix = "";
   for (let i = 0; i < 8; i++) suffix += SLUG_CHARS[Math.floor(Math.random() * SLUG_CHARS.length)];
   return `exp-${suffix}`;
-}
-
-/** Total cents (subtotal + tax + tip) across every expense on the event. */
-export function expenseTotalCents(event: SettleEvent): number {
-  return (event.expenses ?? []).reduce(
-    (acc, e) => acc + e.amountCents + e.taxCents + e.tipCents,
-    0
-  );
-}
-
-/** Per-participant balance in cents. Positive = owed by others, negative = owes. Sums to zero. */
-export function computeBalances(event: SettleEvent): Record<string, number> {
-  const balances: Record<string, number> = {};
-  for (const p of event.participants) balances[p.id] = 0;
-  for (const e of event.expenses ?? []) {
-    const total = e.amountCents + e.taxCents + e.tipCents;
-    const n = e.splitWith.length;
-    if (n === 0) continue;
-    const base = Math.floor(total / n);
-    const remainder = total - base * n;
-    balances[e.payerId] = (balances[e.payerId] ?? 0) + total;
-    e.splitWith.forEach((id, i) => {
-      const share = base + (i < remainder ? 1 : 0);
-      balances[id] = (balances[id] ?? 0) - share;
-    });
-  }
-  return balances;
 }
 
 export function makeParticipantId(name: string, taken: Set<string>): string {

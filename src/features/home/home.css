@@ -1,0 +1,62 @@
+.balance-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+
+.balance-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 12px;
+  border: 1px dashed #5b5341;
+  background: #f0e4c4;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  min-width: 90px;
+}
+.balance-pill.is-positive { border-color: #2d6a2d; color: #2d6a2d; }
+.balance-pill.is-negative { border-color: #c0392b; color: #c0392b; }
+.balance-pill.is-zero { opacity: 0.7; }
+
+.balance-name {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+}
+.balance-amt {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.expense-row {
+  border: 1px dashed #5b5341;
+  background: #f0e4c4;
+  padding: 10px 12px;
+  margin: 6px 0;
+}
+.expense-meta {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #5b5341;
+  letter-spacing: 0.06em;
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.home-actions .mark-paid {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}

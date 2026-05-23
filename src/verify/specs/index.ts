@@ -3,3 +3,4 @@ import "./SettleScreen.verify";
 import "./CreateEventScreen.verify";
 import "./ClaimNameScreen.verify";
 import "./AddExpenseScreen.verify";
+import "./EventHomeScreen.verify";
