@@ -4,3 +4,4 @@ dist/
 .issues/
 .DS_Store
 *.log
+tsconfig.tsbuildinfo

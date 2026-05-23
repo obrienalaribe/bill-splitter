@@ -1,39 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { CreateEventScreen } from "./features/create/CreateEventScreen";
 import { SettleScreen } from "./features/settle/SettleScreen";
-import type { SettleEvent } from "./features/settle/types";
+import { readEvent } from "./lib/eventStore";
 
-const DEMO_EVENT: SettleEvent = {
-  id: "sat-night-out",
-  title: "Saturday Night Out",
-  currency: "USD",
-  participants: [
-    { id: "alex", name: "Alex" },
-    { id: "sam", name: "Sam" },
-    { id: "jordan", name: "Jordan" },
-    { id: "riley", name: "Riley" },
-  ],
-  debts: [
-    { id: "d1", fromId: "riley", toId: "alex", amountCents: 7500, status: "open" },
-    { id: "d2", fromId: "jordan", toId: "alex", amountCents: 3000, status: "open" },
-    { id: "d3", fromId: "jordan", toId: "sam", amountCents: 500, status: "paid", paidAt: "02:14" },
-  ],
-};
-
-export function App() {
+function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell">
       <nav className="app-nav">
-        <strong>Splittr</strong>
+        <Link to="/">
+          <strong>Splittr</strong>
+        </Link>
         <Link to="/verify">→ verification dashboard</Link>
       </nav>
-      <SettleScreen event={DEMO_EVENT} />
+      {children}
       <footer className="app-foot">
         <p>
-          Every screen emits a <code>data-verify-*</code> DOM contract.
-          Open <code>/verify</code> or call <code>window.__verify</code> in the
-          console to see how an agent observes this app.
+          No accounts. Just a link. Every screen emits a <code>data-verify-*</code>{" "}
+          DOM contract — open <code>/verify</code> to see what an agent observes.
         </p>
       </footer>
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <Shell>
+      <CreateEventScreen />
+    </Shell>
+  );
+}
+
+export function EventRoute() {
+  const { eventId = "" } = useParams();
+  const event = readEvent(eventId);
+  if (!event) {
+    return (
+      <Shell>
+        <section className="settle-screen" data-verify-unit="EventNotFound">
+          <header className="settle-header">
+            <h1>EVENT NOT FOUND</h1>
+            <p className="settle-sub">id: {eventId}</p>
+          </header>
+          <Link to="/" className="mark-paid">← BACK TO CREATE</Link>
+        </section>
+      </Shell>
+    );
+  }
+  return (
+    <Shell>
+      <SettleScreen event={event} />
+    </Shell>
   );
 }
