@@ -1,0 +1,156 @@
+/* Receipt aesthetic for SettleScreen */
+.settle-screen {
+  max-width: 460px;
+  margin: 24px auto;
+  padding: 0 20px 28px;
+  background: #fbf5e3;
+  color: #1a1a1a;
+  font-family: "Courier New", ui-monospace, "Roboto Mono", monospace;
+  font-size: 15px;
+  line-height: 1.4;
+  border-left: 1px dashed #b0a48a;
+  border-right: 1px dashed #b0a48a;
+  position: relative;
+}
+
+.receipt-perf {
+  height: 14px;
+  background-image: radial-gradient(circle at 7px 7px, #f4ecd8 6px, transparent 6px);
+  background-size: 14px 14px;
+}
+
+.settle-header {
+  text-align: center;
+  padding-top: 8px;
+}
+.settle-header h1 {
+  font-size: 20px;
+  letter-spacing: 0.18em;
+  margin: 14px 0 4px;
+}
+.settle-sub {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #5b5341;
+  margin: 0 0 12px;
+}
+
+.receipt-div {
+  border: 0;
+  border-top: 1px dashed #5b5341;
+  margin: 14px 0;
+}
+
+.debt-card {
+  border: 1px dashed #5b5341;
+  background: #f0e4c4;
+  padding: 12px 14px;
+  margin: 10px 0;
+}
+.debt-card.is-paid {
+  opacity: 0.7;
+}
+
+.debt-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+.debt-pair {
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.debt-arrow {
+  color: #c0392b;
+  font-weight: bold;
+  padding: 0 4px;
+}
+.debt-amt {
+  font-size: 22px;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+.pay-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.pay-btn {
+  flex: 1;
+  padding: 8px 0;
+  background: transparent;
+  color: #1a1a1a;
+  border: 1px dashed #5b5341;
+  text-align: center;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.pay-btn-primary {
+  background: #1a1a1a;
+  color: #fbf5e3;
+  border-style: solid;
+}
+
+.mark-paid {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px;
+  background: transparent;
+  border: 1px dashed #c0392b;
+  color: #c0392b;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.mark-paid:hover {
+  background: rgba(192, 57, 43, 0.06);
+}
+
+.debt-paid-meta {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: #5b5341;
+  letter-spacing: 0.06em;
+}
+.paid-stamp {
+  display: inline-block;
+  transform: rotate(-8deg);
+  border: 2px solid #2d6a2d;
+  color: #2d6a2d;
+  padding: 1px 8px;
+  font-weight: bold;
+  letter-spacing: 0.18em;
+  font-size: 10px;
+  opacity: 0.85;
+  margin-right: 6px;
+}
+
+.settle-empty {
+  text-align: center;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  color: #5b5341;
+  padding: 20px 0;
+}
+
+.settle-footnote {
+  text-align: center;
+  font-size: 11px;
+  color: #5b5341;
+  letter-spacing: 0.1em;
+  margin-top: 16px;
+}
+
+/* Paper background for the app shell when SettleScreen is rendered */
+body {
+  background: #f4ecd8;
+}
