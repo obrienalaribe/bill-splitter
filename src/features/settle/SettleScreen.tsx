@@ -32,6 +32,12 @@ export function SettleScreen({ event, onMarkPaid }: SettleScreenProps) {
   const settledCount = debts.length - openDebts.length;
   const outstandingCents = openDebts.reduce((acc, d) => acc + d.amountCents, 0);
 
+  const expenses = event.expenses ?? [];
+  const totalCents = expenses.reduce(
+    (acc, e) => acc + e.amountCents + e.taxCents + e.tipCents,
+    0
+  );
+
   const handleMarkPaid = (debtId: string) => {
     setPaidOptimistic((prev) => new Set(prev).add(debtId));
     onMarkPaid?.(debtId);
@@ -48,6 +54,8 @@ export function SettleScreen({ event, onMarkPaid }: SettleScreenProps) {
         "outstanding-cents": outstandingCents,
         "settled-pairs": settledCount,
         "open-pairs": openDebts.length,
+        "total-cents": totalCents,
+        "expense-count": expenses.length,
       })}
     >
       <div className="receipt-perf" aria-hidden="true" />
@@ -60,6 +68,38 @@ export function SettleScreen({ event, onMarkPaid }: SettleScreenProps) {
       </header>
 
       <hr className="receipt-div" />
+
+      {expenses.length > 0 && (
+        <section className="expense-list" data-verify-section="expenses">
+          {expenses.map((e) => {
+            const expTotal = e.amountCents + e.taxCents + e.tipCents;
+            return (
+              <article
+                key={e.id}
+                className="expense-row"
+                {...verifyAttrs({
+                  "expense-id": e.id,
+                  "amount-cents": expTotal,
+                  "subtotal-cents": e.amountCents,
+                  "tax-cents": e.taxCents,
+                  "tip-cents": e.tipCents,
+                  "payer-id": e.payerId,
+                  "split-count": e.splitWith.length,
+                })}
+              >
+                <div className="debt-line">
+                  <span className="debt-pair" data-verify-description>
+                    {e.description}
+                  </span>
+                  <span className="debt-amt" data-verify-amount-display>
+                    {formatAmount(expTotal, event.currency)}
+                  </span>
+                </div>
+              </article>
+            );
+          })}
+        </section>
+      )}
 
       {debts.length === 0 && (
         <p className="settle-empty" data-verify-empty="true">

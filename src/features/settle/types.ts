@@ -26,12 +26,27 @@ export interface Debt {
   paidAt?: string;
 }
 
+export interface Expense {
+  id: string;
+  /** Subtotal in cents (excludes tax/tip). Must be > 0. */
+  amountCents: number;
+  description: string;
+  payerId: string;
+  /** Participant ids the expense is split among. Must include payerId. */
+  splitWith: string[];
+  taxCents: number;
+  tipCents: number;
+  createdAt: string;
+}
+
 export interface SettleEvent {
   id: string;
   title: string;
   currency: string;
   participants: Participant[];
   debts: Debt[];
+  /** Expenses logged on this event. Optional for back-compat with existing fixtures. */
+  expenses?: Expense[];
 }
 
 export interface SettleScreenProps {
