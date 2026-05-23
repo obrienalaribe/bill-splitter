@@ -24,6 +24,7 @@ const EXPECTED_FAIL = new Set<string>([
   "SettleScreen::self-debt",
   "SettleScreen::unknown-participant-in-debt",
   "ClaimNameScreen::already-claimed",
+  "ClaimNameScreen::name-not-in-list",
 ]);
 
 describe("verification matrix", () => {

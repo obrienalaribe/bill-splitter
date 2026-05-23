@@ -40,15 +40,24 @@ export class AlreadyClaimedError extends Error {
   }
 }
 
+export type ClaimErrorCode = "name-not-found" | "event-not-found";
+
+export class ClaimError extends Error {
+  constructor(public code: ClaimErrorCode, message: string) {
+    super(message);
+    this.name = "ClaimError";
+  }
+}
+
 export function claimName(
   eventId: string,
   participantId: string,
   handles?: ParticipantHandles
 ): SettleEvent {
   const event = readEvent(eventId);
-  if (!event) throw new Error(`event "${eventId}" not found`);
+  if (!event) throw new ClaimError("event-not-found", `event "${eventId}" not found`);
   const p = event.participants.find((x) => x.id === participantId);
-  if (!p) throw new Error(`participant "${participantId}" not in event`);
+  if (!p) throw new ClaimError("name-not-found", `participant "${participantId}" not in event`);
   if (p.claimedBy) throw new AlreadyClaimedError(p.id, p.name);
   p.claimedBy = true;
   if (handles?.venmo) p.venmo = handles.venmo;

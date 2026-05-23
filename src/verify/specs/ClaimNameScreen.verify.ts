@@ -116,6 +116,37 @@ registerUnit<ClaimNameScreenProps>({
       },
     },
     {
+      id: "name-not-in-list",
+      probe: true,
+      description:
+        "Probe: claimName with unknown id MUST throw ClaimError(code='name-not-found') referencing the ghost id.",
+      props: {
+        event: {
+          id: "claim-ghost",
+          title: "Saturday Night Out",
+          currency: "USD",
+          participants: PARTICIPANTS,
+          debts: [],
+        },
+      },
+      act: async ({ root }) => {
+        seed("claim-ghost");
+        const { claimName: cn, ClaimError } = await import("../../lib/eventStore");
+        try {
+          cn("claim-ghost", "ghost-id");
+        } catch (e) {
+          if (e instanceof ClaimError && e.code === "name-not-found") {
+            const errEl = document.createElement("p");
+            errEl.setAttribute("data-verify-error", "name-not-found");
+            errEl.textContent = e.message;
+            root.querySelector('[data-verify-unit="ClaimNameScreen"]')?.prepend(errEl);
+            const host = root.querySelector('[data-verify-unit="ClaimNameScreen"]');
+            host?.setAttribute("data-verify-has-error", "true");
+          }
+        }
+      },
+    },
+    {
       id: "already-claimed",
       probe: true,
       description:
@@ -218,6 +249,18 @@ registerUnit<ClaimNameScreenProps>({
         const err = root.querySelector('[data-verify-error="already-claimed"]');
         if (err) {
           return `double-claim rejected: ${err.textContent ?? "(no detail)"}`;
+        }
+        return true;
+      },
+    },
+    {
+      id: "no-name-not-found-error",
+      description:
+        "No [data-verify-error='name-not-found'] element should be rendered in a well-formed state",
+      check: ({ root }) => {
+        const err = root.querySelector('[data-verify-error="name-not-found"]');
+        if (err) {
+          return `name-not-found rejected: ${err.textContent ?? "(no detail)"}`;
         }
         return true;
       },
