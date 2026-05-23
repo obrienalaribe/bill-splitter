@@ -1,3 +1,4 @@
 {"ts":"2026-05-23T19:18:23Z","phase":"bootstrap","note":"SPEC+DESIGN+DECISION imported from workshop; .issues/ created"}
 {"ts":"2026-05-23T19:23:34Z","phase":"phase-3-breakdown","note":"4 slices identified + confirmed by operator; 4 gh issues created (#1-4); 4 context.md files written"}
 {"ts":"2026-05-23T19:26:48Z","phase":"phase-4-slice-1","note":"CreateEvent built on feat/issue-1-create-event; 16/16 verify; PR #5 opened (hitl, awaiting review)"}
+{"ts":"2026-05-23T19:46:06Z","phase":"fixup","note":"context.md files moved from .buildkit/issues/ → .issues/ (canonical buildkit path); validate-context retro-applied hitl labels to #1-4 + PR #5"}
