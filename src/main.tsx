@@ -6,13 +6,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./verify/verifiers";
 import "./verify/specs";
 
-import { App, EventRoute } from "./App";
+import { App, ClaimRoute, EventRoute } from "./App";
 import { Dashboard } from "./verify/harness/Dashboard";
 import { UnitPage } from "./verify/harness/UnitPage";
 import { installVerifyHandle } from "./verify/harness/handle";
 import "./styles.css";
 import "./features/settle/settle.css";
 import "./features/create/create.css";
+import "./features/claim/claim.css";
 
 installVerifyHandle();
 
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
   [
     { path: "/", element: <App /> },
     { path: "/e/:eventId", element: <EventRoute /> },
+    { path: "/e/:eventId/claim", element: <ClaimRoute /> },
     { path: "/verify", element: <Dashboard /> },
     { path: "/verify/:unitId/:fixtureId", element: <UnitPage /> },
   ],

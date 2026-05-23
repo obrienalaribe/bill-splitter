@@ -1,7 +1,15 @@
 export interface Participant {
   id: string;
   name: string;
+  /** True once a device has claimed this participant slot. */
+  claimedBy?: boolean;
   /** Optional Venmo / Cash App / PayPal handle for deep-links. */
+  venmo?: string;
+  cashapp?: string;
+  paypal?: string;
+}
+
+export interface ParticipantHandles {
   venmo?: string;
   cashapp?: string;
   paypal?: string;

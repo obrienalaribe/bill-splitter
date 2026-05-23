@@ -1,0 +1,82 @@
+.claim-screen {
+  max-width: 460px;
+  margin: 24px auto;
+  padding: 0 20px 28px;
+  background: #fbf5e3;
+  color: #1a1a1a;
+  font-family: "Courier New", ui-monospace, "Roboto Mono", monospace;
+  font-size: 15px;
+  line-height: 1.4;
+  border-left: 1px dashed #b0a48a;
+  border-right: 1px dashed #b0a48a;
+}
+
+.claim-row {
+  padding: 10px 0;
+  border-bottom: 1px dashed #b0a48a;
+}
+
+.claim-row.is-claimed {
+  opacity: 0.7;
+}
+
+.claim-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.claim-name {
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+.claim-badge {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #5b5341;
+  border: 1px dashed #5b5341;
+  padding: 2px 6px;
+}
+
+.claim-error {
+  background: #f0d4c4;
+  border: 1px dashed #c0392b;
+  color: #c0392b;
+  padding: 8px 10px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  margin: 8px 0;
+}
+
+.claim-handles {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #f0e4c4;
+  border: 1px dashed #5b5341;
+}
+
+.claim-handles .create-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0;
+}
+
+.claim-handles .create-field > span {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5b5341;
+}
+
+.claim-handles input {
+  font-family: inherit;
+  font-size: 15px;
+  padding: 6px 8px;
+  background: #fbf5e3;
+  border: 1px dashed #5b5341;
+  color: #1a1a1a;
+}
