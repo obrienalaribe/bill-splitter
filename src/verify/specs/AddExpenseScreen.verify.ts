@@ -116,7 +116,7 @@ registerUnit<AddExpenseScreenProps>({
       id: "happy-path",
       description:
         "Fill description + $42.50 amount, default split (all 3) → save persists expense + computeBalances sums to 0.",
-      props: { event: eventFor("expense-happy") },
+      props: { event: eventFor("expense-happy"), onSaved: () => {} },
       act: async ({ type, click }) => {
         seed("expense-happy");
         await type('[data-verify-field="description"]', "Dinner");
