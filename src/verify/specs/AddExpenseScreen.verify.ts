@@ -304,7 +304,8 @@ registerUnit<AddExpenseScreenProps>({
           return `expenseTotalCents=${total}, expected ${expectedTotal}`;
         }
         const balances = computeBalances(stored);
-        const sum = Object.values(balances).reduce((a, b) => a + b, 0);
+        let sum = 0;
+        for (const v of balances.values()) sum += v;
         if (sum !== 0) return `balances sum to ${sum}, expected 0`;
         return true;
       },

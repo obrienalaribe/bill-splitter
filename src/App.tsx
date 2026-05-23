@@ -3,6 +3,7 @@ import { CreateEventScreen } from "./features/create/CreateEventScreen";
 import { ClaimNameScreen } from "./features/claim/ClaimNameScreen";
 import { SettleScreen } from "./features/settle/SettleScreen";
 import { AddExpenseScreen } from "./features/expense/AddExpenseScreen";
+import { EventHomeScreen } from "./features/home/EventHomeScreen";
 import { readEvent } from "./lib/eventStore";
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -34,6 +35,29 @@ export function App() {
 }
 
 export function EventRoute() {
+  const { eventId = "" } = useParams();
+  const event = readEvent(eventId);
+  if (!event) {
+    return (
+      <Shell>
+        <section className="settle-screen" data-verify-unit="EventNotFound">
+          <header className="settle-header">
+            <h1>EVENT NOT FOUND</h1>
+            <p className="settle-sub">id: {eventId}</p>
+          </header>
+          <Link to="/" className="mark-paid">← BACK TO CREATE</Link>
+        </section>
+      </Shell>
+    );
+  }
+  return (
+    <Shell>
+      <EventHomeScreen event={event} />
+    </Shell>
+  );
+}
+
+export function SettleRoute() {
   const { eventId = "" } = useParams();
   const event = readEvent(eventId);
   if (!event) {
