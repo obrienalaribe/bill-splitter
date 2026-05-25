@@ -4,7 +4,7 @@ A no-account, link-based, mobile-first bill splitter for friends at dinners and 
 
 **Live demo:** https://bill-splitter-sooty-six.vercel.app/
 
-> Built as a workshop output using [buildkit](https://github.com/obrienalaribe/buildkit), an autonomous build harness for Claude Code. See the retrospective: [What I learned from building an agent harness](https://obrienalaribe.github.io/journal/what-i-learned-from-building-an-agent-harness/).
+> Built as a workshop output using buildkit, an autonomous build harness for Claude Code. See the retrospective: [What I learned from building an agent harness](https://obrienalaribe.github.io/journal/what-i-learned-from-building-an-agent-harness/).
 
 ## Run locally
 
@@ -19,7 +19,7 @@ Open `http://localhost:5200/verify` for the live verification dashboard (per the
 
 ## How this repo was built
 
-This project was built end-to-end by [buildkit](https://github.com/obrienalaribe/buildkit) following the [Anthropic How We Claude Code workshop](https://github.com/anthropics/cwc-workshops/tree/main/how-we-claude-code) three-phase flow:
+This project was built end-to-end by buildkit following the [Anthropic How We Claude Code workshop](https://github.com/anthropics/cwc-workshops/tree/main/how-we-claude-code) three-phase flow:
 
 1. **Phase 1 (interview brainstorm)**: an interview-driven session produced [`SPEC.md`](.buildkit/SPEC.md) (audience, session model, scope ladder).
 2. **Phase 2 (divergent planning)**: four visual design directions were rendered as static HTML mockups; one was picked and the rationale captured in [`DECISION.md`](.buildkit/DECISION.md). The chosen direction (Receipt) is described in [`DESIGN.md`](.buildkit/DESIGN.md).
