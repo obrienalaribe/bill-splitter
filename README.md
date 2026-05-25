@@ -2,6 +2,8 @@
 
 A no-account, link-based, mobile-first bill splitter for friends at dinners and events.
 
+**Live demo:** https://bill-splitter-f77m4d8f1-obrienalaribes-projects.vercel.app/
+
 > Built as a workshop output using [buildkit](https://github.com/obrienalaribe/buildkit), an autonomous build harness for Claude Code. See the retrospective: [What I learned from building an agent harness](https://obrienalaribe.github.io/journal/what-i-learned-from-building-an-agent-harness/).
 
 ## Run locally
